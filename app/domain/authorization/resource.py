@@ -37,7 +37,8 @@ class RenewSession(object):
         self.__service = service
 
     def on_get(self, req: falcon.Request, resp: falcon.Response) -> None:
-        token = self.__service.renew_session(previous_token=req.context["access_token"])
+        principals = req.context["principals"]
+        token = self.__service.renew_session(identifier=principals.subject(), device_identifier=principals.id())
         resp.body = token.SerializeToString()
         resp.content_type = "application/x-protobuf"
         resp.status = falcon.HTTP_OK
@@ -49,5 +50,6 @@ class EndSession(object):
         self.__service = service
 
     def on_put(self, req: falcon.Request, resp: falcon.Response) -> None:
-        self.__service.end_session(access_token=req.context["access_token"])
+        principals = req.context["principals"]
+        self.__service.end_session(identifier=principals.subject(), device_identifier=principals.id())
         resp.status = falcon.HTTP_NO_CONTENT

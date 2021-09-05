@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x14\x61uthentication.proto\".\n\x0b\x43redentials\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"*\n\x05Token\x12\r\n\x05token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\"r\n\x0bUserDetails\x12\x12\n\nidentifier\x18\x01 \x01(\t\x12\x12\n\nfirst_name\x18\x02 \x01(\t\x12\x11\n\tlast_name\x18\x03 \x01(\t\x12\x15\n\remail_address\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\tb\x06proto3'
+  serialized_pb=b'\n\x14\x61uthentication.proto\"A\n\x0b\x43redentials\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tdevice_id\x18\x03 \x01(\t\"*\n\x05Token\x12\r\n\x05token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\"r\n\x0bUserDetails\x12\x12\n\nidentifier\x18\x01 \x01(\t\x12\x12\n\nfirst_name\x18\x02 \x01(\t\x12\x11\n\tlast_name\x18\x03 \x01(\t\x12\x15\n\remail_address\x18\x04 \x01(\t\x12\x11\n\tphoto_url\x18\x05 \x01(\tb\x06proto3'
 )
 
 
@@ -47,6 +47,13 @@ _CREDENTIALS = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='device_id', full_name='Credentials.device_id', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -60,7 +67,7 @@ _CREDENTIALS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=24,
-  serialized_end=70,
+  serialized_end=89,
 )
 
 
@@ -98,8 +105,8 @@ _TOKEN = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=72,
-  serialized_end=114,
+  serialized_start=91,
+  serialized_end=133,
 )
 
 
@@ -158,8 +165,8 @@ _USERDETAILS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=116,
-  serialized_end=230,
+  serialized_start=135,
+  serialized_end=249,
 )
 
 DESCRIPTOR.message_types_by_name['Credentials'] = _CREDENTIALS

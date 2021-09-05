@@ -3,6 +3,7 @@ syntax = "proto3";
 message Credentials {
     string email = 1;
 	string password = 2;
+	string device_id = 3;
 }
 
 message Token {
