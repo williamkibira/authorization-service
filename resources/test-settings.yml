@@ -1,0 +1,10 @@
+host: 0.0.0.0
+port: 5200
+database:
+  uri: postgres://tester:tester@localhost:5432/tester
+aws:
+  access-key: "hxmR3l6SuN6lAjwd0sDs"
+  secret-key: "1FaFnK3GKgGiOnNCwMvAbIbnSA8bUNVi"
+  bucket: "catalog"
+  region: "us-east-1"
+  url: "http://localhost:9000"

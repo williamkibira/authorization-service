@@ -15,14 +15,13 @@ from app.settings import PRIVATE_RSA_KEY
 
 
 class AuthorizationService(LoggerMixin):
-    def __init__(self, file_storage: FileStorage, repository: AuthorizationRepository,
+    def __init__(self, repository: AuthorizationRepository,
                  password_handler: PasswordHandler,
                  duration: int,
                  base_photo_url: str
                  ):
         self.__base_photo_url = base_photo_url
         self.__duration = duration
-        self.__file_storage = file_storage
         self.__repository = repository
         self.__password_handler = password_handler
         self.__key = jwk.JWK()
@@ -35,25 +34,24 @@ class AuthorizationService(LoggerMixin):
             if not self.__password_handler.verify(input_password=credentials.password, existing_hash=user.password):
                 raise falcon.HTTPUnauthorized(title="Your credentials were not a match for an existing user",
                                               description="No matching for {0}".format(credentials.email))
-            return self.__create_session(user=user)
+            return self.__create_session(user=user, device_identifier=credentials.device_id)
         raise falcon.HTTPUnauthorized(title="Your credentials were not a match for an existing user",
                                       description="No matching for {0}".format(credentials.email))
 
     def fetch_user_details(self, identifier: str) -> UserDetails:
         user = self.__repository.fetch_user_by_identifier(identifier=identifier)
         user_details = UserDetails()
-        user_details.identifier = user.identifier
+        user_details.identifier = str(user.identifier)
         user_details.first_name = user.first_name
         user_details.last_name = user.last_name
         user_details.email_address = user.email_address
         user_details.photo_url = "{0}/{1}".format(self.__base_photo_url, user.photo_identifier)
-        user_details.roles = [role.name for role in user.roles]
         return user_details
 
     def renew_session(self, identifier: str, device_identifier: str) -> Token:
         user = self.__repository.fetch_user_by_identifier(identifier=identifier)
         current_time = datetime.utcnow()
-        expiry_time = current_time + timedelta(days=self.__duration)
+        expiry_time = current_time + timedelta(minutes=self.__duration)
         claims = {'sub': identifier,
                   'jti': device_identifier,
                   'exp': expiry_time.timestamp(),
@@ -82,7 +80,7 @@ class AuthorizationService(LoggerMixin):
     def __create_session(self, user: User, device_identifier: str) -> Token:
         current_time = datetime.utcnow()
         expiry_time = current_time + timedelta(days=self.__duration)
-        claims = {'sub': user.identifier,
+        claims = {'sub': str(user.identifier),
                   'jti': device_identifier,
                   'exp': expiry_time.timestamp(),
                   'iat': current_time.timestamp(),
@@ -95,12 +93,12 @@ class AuthorizationService(LoggerMixin):
         jwe_token.add_recipient(key=self.__key)
         content = jwe_token.serialize(compact=True)
         self.__repository.add_session(
-            identifier=user.id,
+            identifier=user.identifier,
             device_identifier=device_identifier,
             initiated_at=current_time,
             expires_at=expiry_time)
         token = Token()
         token.token = content
-        token.expires_in = expiry_time.timestamp() - current_time.timestamp()
+        token.expires_in = int(expiry_time.timestamp() - current_time.timestamp())
         return token
 

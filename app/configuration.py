@@ -1,12 +1,13 @@
 import os
 import socket
 from typing import Dict, List
+
 from decouple import config
 from yaml import safe_load
+
 from app.core.discovery.client import ConsulClient, ServiceDiscoveryClient
 from app.core.discovery.credentials import Credentials
 from app.core.security.argon2_password_handler import Argon2Configuration
-from app.core.storage.credentials import S3Credentials
 from app.settings import RESOURCES_DIRECTORY
 
 
@@ -65,8 +66,9 @@ class Configuration(object):
             test_mode: bool = False) -> None:
         self.__build_information = build_information
         self.__database_uri = content_map["database"]["uri"]
+        self.__session_duration = content_map["session"]["duration"]
+        self.__base_photo_url = content_map["base_photo_url"]
         self.__port = int(content_map["port"])
-        self.__s3_credentials = S3Credentials(content_map=content_map)
         self.__argon_configuration = Argon2Configuration.from_content_map(content_map=content_map)
         self.__client = client
         if self.__client is not None:
@@ -80,11 +82,14 @@ class Configuration(object):
     def database_uri(self) -> str:
         return self.__database_uri
 
+    def session_duration(self) -> int:
+        return self.__session_duration
+
+    def base_photo_url(self) -> str:
+        return self.__base_photo_url
+
     def build_information(self) -> BuildInformation:
         return self.__build_information
-
-    def s3_credentials(self):
-        return self.__s3_credentials
 
     def is_in_test_mode(self):
         return self.__test_mode
@@ -151,5 +156,6 @@ class Configuration(object):
             else:
                 Configuration.__instance__ = Configuration.local()
         return Configuration.__instance__
+
 
 

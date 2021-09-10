@@ -1,0 +1,17 @@
+host: 0.0.0.0
+port: 5200
+database:
+  uri: postgresql://tester:tester@localhost:5432/tester
+
+argon:
+  memory-cost: 102400
+  salt-length: 16
+  hash-length: 16
+  parallelism: 8
+  time-cost: 2
+  variant: 2
+
+session:
+  duration: 5 # DURATION IS IN MINUTES
+
+base_photo_url: http://localhost:9000

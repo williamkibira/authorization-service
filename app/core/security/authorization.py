@@ -2,20 +2,21 @@ from datetime import datetime
 from typing import List
 
 import falcon
-import simplejson as json
 from jwcrypto import jwk, jwe
 
+from app.core.logging.loggers import LoggerMixin
 from app.core.security.claims import Claims
 from app.settings import PRIVATE_RSA_KEY
 
 
-class Restrict(object):
+class Restrict(LoggerMixin):
     def __init__(self, roles: List[str]):
         self.__roles = roles
 
     def __call__(self, req: falcon.Request, resp: falcon.Response, resource, params):
         token = self.__strip_out_authorization_token(req=req)
         claims_payload = self.__extract_token_claims(encrypted_token=token)
+        self._info("CLAIMS-CONTENT: {}".format(claims_payload))
         claims = Claims.parse(claims_payload)
         if self.__is_authorized(claims=claims):
             req.context["principals"] = claims
